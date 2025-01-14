@@ -1,4 +1,5 @@
 from datetime import datetime
+import shelve
 
 class BankAccount:
     def __init__(self, account_id, full_name_owner, balance):
@@ -49,8 +50,6 @@ class BankAccount:
         if type(other) == int or type(other) == float:
             nb = self.balance + other
             return f'Old Balance: {self.balance}\nNew Balance = {nb}'
-        # if type(self) != type(other):
-        #     return f'Old Balance: {self.balance}\nNew Balance = {self.balance + other.balance}'
         if type(self) == type(other):
             return f'Old Balance: {self.balance}\nNew Balance = {self.balance + other.balance}'
 
@@ -80,50 +79,73 @@ class BankAccount:
 b1 = BankAccount(8676230, 'arya stark', 28000)
 bg = BankAccount(6875533, 'golum', 28000)
 b2 = BankAccount(5979982, 'jon snow', 79011)
+
+def save_accounts_to_shelve(filename, accounts):
+    """Save a list of bank accounts to a shelve file"""
+    with shelve.open(filename) as db:
+        for account in accounts:
+            db[str(account.account_id)] = account
+        print(f"Accounts saved successfully to {filename}")
+
+
+def load_accounts_from_shelve(filename):
+    """Load bank accounts from a shelve file"""
+    with shelve.open(filename) as db:
+        accounts = list(db.values())
+    print(f"Accounts loaded successfully from {filename}")
+    return accounts
+
 print('b1 ', b1)
 
 print(f'repr(b1) {repr(b1)}')
 
 print('bg==b1 ', bg==b1)
-print('b1 != bg ',b1 != bg) # False
-print('b1 > b2 ',b1 > b2) # False because 28000 is not bigger than 79011
-print('b1 < b2 ',b1 < b2) # True because 28000 is smaller than 79011
-b3 = BankAccount(1108755, 'arya stark and jon snow', b1 + b2) # will create a new account:
+print('b1 != bg ',b1 != bg)
+print('b1 > b2 ',b1 > b2)
+print('b1 < b2 ',b1 < b2)
+b3 = BankAccount(1108755, 'arya stark and jon snow', b1 + b2)
 print('b3 ', b3)
-# balance=28000+79011=107,011
-print(b2 - b1) # 51,011
-print(b2 * b1) # 2,212,308,000
+
+print(b2 - b1)
+print(b2 * b1)
 
 
-# print('b1==27000' ,b1==27000)
-# print('b1==27 ',b1==27)
-# print('b1==b2 ',b1==b2)
-#
-# print('b1!=27000 ',b1!=27000)
-# print('b1!=27 ',b1!=27)
-# print('b1!=b2 ',b1!=b2)
-#
-# print('b1 > 27000 ',b1 > 27000)
-# print('b1 > 27 ',b1 > 27)
-# print('b1 > b2 ',b1 > b2)
-#
-# print('b1 < 27000) ',b1 < 27000)
-# print('b1 < 27 ',b1 < 27)
-# print('b1 < b2 ',b1 < b2)
-#
-# print('b1 + 27000 ',b1 + 27000)
-# print('b1 + 27 ',b1 + 27)
-# print('b1 + b2 ',b1 + b2)
-#
-# print('b1 - 27000 ',b1 - 27000)
-# print('b1 - 27 ',b1 - 27)
-# print('b1 - b2 ',b1 - b2)
-# print('b2 - b1 ',b2 - b1)
-#
-# print('b1 * 27000 ',b1 * 27000)
-# print('b1 * 27 ',b1 * 27)
-# print('b1 * b2 ',b1 * b2)
+print('b1==27000' ,b1==27000)
+print('b1==27 ',b1==27)
+print('b1==b2 ',b1==b2)
+
+print('b1!=27000 ',b1!=27000)
+print('b1!=27 ',b1!=27)
+print('b1!=b2 ',b1!=b2)
+
+print('b1 > 27000 ',b1 > 27000)
+print('b1 > 27 ',b1 > 27)
+print('b1 > b2 ',b1 > b2)
+
+print('b1 < 27000) ',b1 < 27000)
+print('b1 < 27 ',b1 < 27)
+print('b1 < b2 ',b1 < b2)
+
+print('b1 + 27000 ',b1 + 27000)
+print('b1 + 27 ',b1 + 27)
+print('b1 + b2 ',b1 + b2)
+print('b1 - 27000 ',b1 - 27000)
+print('b1 - 27 ',b1 - 27)
+print('b1 - b2 ',b1 - b2)
+print('b2 - b1 ',b2 - b1)
+
+print('b1 * 27000 ',b1 * 27000)
+print('b1 * 27 ',b1 * 27)
+print('b1 * b2 ',b1 * b2)
 
 print(b1)
 
 print(len(b1))
+
+save_accounts_to_shelve('bank_accounts', [b1, b2, b3, bg])
+
+loaded_accounts = load_accounts_from_shelve('bank_accounts')
+
+for account in loaded_accounts:
+     print(account)
+     print()
